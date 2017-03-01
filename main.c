@@ -6,11 +6,11 @@
 
 void print_all_tags(const char *file)
 {
-	// stat file to make sure it exits
+    // stat file to make sure it exits
 
-	ID3v2_tag* tag = load_tag(file); // Load the full tag from the file
-	if(tag != NULL)
-	{
+    ID3v2_tag* tag = load_tag(file); // Load the full tag from the file
+    if(tag != NULL)
+    {
         ID3v2_frame* f = tag_get_title(tag);
         ID3v2_frame_text_content* tc = parse_text_frame_content(f);
         if (tc != NULL) {
@@ -90,7 +90,13 @@ void print_all_tags(const char *file)
         } else {
             printf("failed to parse COMPOSER\n");
         }
-	}
+    }
+}
+
+void remove_all_tags(const char *filename)
+{
+    // stat file to make sure it exits
+    remove_tag(filename);
 }
 
 int main(int argc, char *argv[])
@@ -100,42 +106,46 @@ int main(int argc, char *argv[])
 
     parg_init(&ps);
 
-    while ((c = parg_getopt(&ps, argc, argv, "hs:vp:")) != -1) {
+    while ((c = parg_getopt(&ps, argc, argv, "hs:vp:r:")) != -1) {
         switch (c) {
-        case 1:
-            printf("nonoption '%s'\n", ps.optarg);
-            break;
-        case 'h':
-            printf("Usage: tag [-h] [-v] [-s STRING]\n");
-            return EXIT_SUCCESS;
-            break;
-        case 's':
-            printf("option -s with argument '%s'\n", ps.optarg);
-            break;
-        case 'v':
-            printf("tag 1.0.0\n");
-            return EXIT_SUCCESS;
-            break;
-        case 'p':
-            print_all_tags(ps.optarg);
-            return EXIT_SUCCESS;
-            break;
-        case '?':
-            if (ps.optopt == 's') {
-                printf("option -s requires an argument\n");
-            }
-            else if (ps.optopt == 'p') {
-                printf("option -p requires an argument\n");
-            }
-            else {
-                printf("unknown option -%c\n", ps.optopt);
-            }
-            return EXIT_FAILURE;
-            break;
-        default:
-            printf("error: unhandled option -%c\n", c);
-            return EXIT_FAILURE;
-            break;
+            case 1:
+                printf("nonoption '%s'\n", ps.optarg);
+                break;
+            case 'h':
+                printf("Usage: tag [-h] [-v] [-p filename] [-s STRING] [-r filename]\n");
+                return EXIT_SUCCESS;
+                break;
+            case 's':
+                printf("option -s with argument '%s'\n", ps.optarg);
+                break;
+            case 'v':
+                printf("tag 1.0.0\n");
+                return EXIT_SUCCESS;
+                break;
+            case 'p':
+                print_all_tags(ps.optarg);
+                return EXIT_SUCCESS;
+                break;
+            case 'r':
+                remove_all_tags(ps.optarg);
+                return EXIT_SUCCESS;
+                break;
+            case '?':
+                if (ps.optopt == 's') {
+                    printf("option -s requires an argument\n");
+                }
+                else if (ps.optopt == 'p') {
+                    printf("option -p requires an argument\n");
+                }
+                else {
+                    printf("unknown option -%c\n", ps.optopt);
+                }
+                return EXIT_FAILURE;
+                break;
+            default:
+                printf("error: unhandled option -%c\n", c);
+                return EXIT_FAILURE;
+                break;
         }
     }
 
