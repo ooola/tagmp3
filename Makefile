@@ -6,9 +6,12 @@ CFLAGS= -Wall
 SRC=main.c
 BIN=tag
 
-.phony: all
+.phony: all test
 
 all: $(BIN)
 
 $(BIN): $(SRC)
 	$(CC) $(SRC) $(INCLUDE) $(CFLAGS) $(LFLAGS) $(LIBS) -o $@
+
+test:
+	@cp magik3.mp3 tmp.mp3
