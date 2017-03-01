@@ -1,0 +1,6 @@
+[submodule "id3v2lib"]
+	path = id3v2lib
+	url = git@github.com:larsbs/id3v2lib.git
+[submodule "parg"]
+	path = parg
+	url = git@github.com:jibsen/parg.git
