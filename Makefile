@@ -4,7 +4,7 @@ LIBS = -l parg -l id3v2
 CC=/usr/bin/cc
 CFLAGS= -Wall
 SRC=main.c
-BIN=tag
+BIN=tagmp3
 
 .phony: all test
 
