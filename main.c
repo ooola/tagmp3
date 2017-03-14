@@ -6,6 +6,12 @@
 #include "id3v2lib.h"
 #include "parg.h"
 
+static bool verbose = false;
+
+#ifdef DEBUG
+verbose = true
+#endif
+
 struct info {
     char* title;
     char* artist;
@@ -250,15 +256,21 @@ int main(int argc, char *argv[])
                 break;
             case 'p':
                 print = true;
-                printf("setting print to: true\n");
+                if (verbose) {
+                    printf("setting print to: true\n");
+                }
                 break;
             case 'r':
                 remove = true;
-                printf("setting remove to: true\n");
+                if (verbose) {
+                    printf("setting remove to: true\n");
+                }
                 break;
             case 'u':
                 set_unspecified_to_empty = true;
-                printf("setting unspecified fields to empty string: true\n");
+                if (verbose) {
+                    printf("setting unspecified fields to empty string: true\n");
+                }
                 break;
             case 't':
                 i.title = (char*)ps.optarg;
