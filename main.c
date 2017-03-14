@@ -123,7 +123,7 @@ void print_all_tags(const char *file)
     }
 }
 
-void set_tags(const char *file, struct info* i)
+void set_tags(const char *file, struct info* i, bool set_unspecified_to_empty)
 {
     if (!is_file_writable(file)) {
         fprintf(stderr, "%s is not writeable or does not exist", file);
@@ -140,32 +140,62 @@ void set_tags(const char *file, struct info* i)
     if (i->title) {
         tag_set_title(i->title, 0, tag);
     }
+    else if (set_unspecified_to_empty) {
+        tag_set_title("", 0, tag);
+    }
     if (i->artist) {
         tag_set_artist(i->artist, 0, tag);
+    }
+    else if (set_unspecified_to_empty) {
+        tag_set_artist("", 0, tag);
     }
     if (i->album) {
         tag_set_album(i->album, 0, tag);
     }
+    else if (set_unspecified_to_empty) {
+        tag_set_album("", 0, tag);
+    }
     if (i->album_artist) {
         tag_set_album_artist(i->album_artist, 0, tag);
+    }
+    else if (set_unspecified_to_empty) {
+        tag_set_album_artist("", 0, tag);
     }
     if (i->genre) {
         tag_set_genre(i->genre, 0, tag);
     }
+    else if (set_unspecified_to_empty) {
+        tag_set_genre("", 0, tag);
+    }
     if (i->track) {
         tag_set_track(i->track, 0, tag);
+    }
+    else if (set_unspecified_to_empty) {
+        tag_set_track("", 0, tag);
     }
     if (i->year) {
         tag_set_year(i->year, 0, tag);
     }
+    else if (set_unspecified_to_empty) {
+        tag_set_year("", 0, tag);
+    }
     if (i->comment) {
         tag_set_comment(i->comment, 0, tag);
+    }
+    else if (set_unspecified_to_empty) {
+        tag_set_comment("", 0, tag);
     }
     if (i->disc_number) {
         tag_set_disc_number(i->disc_number, 0, tag);
     }
+    else if (set_unspecified_to_empty) {
+        tag_set_disc_number("", 0, tag);
+    }
     if (i->composer) {
         tag_set_composer(i->composer, 0, tag);
+    }
+    else if (set_unspecified_to_empty) {
+        tag_set_composer("", 0, tag);
     }
 
     // Write the new tag to the file
@@ -182,9 +212,9 @@ int main(int argc, char *argv[])
 {
     struct parg_state ps = {0};
     int c, optend = 0;
-    bool print, remove = false;
+    bool print, remove, set_unspecified_to_empty = false;
     struct info i = {0};
-    const char *optstring = "hvprt:a:l:b:g:k:y:c:n:o:";
+    const char *optstring = "hvprut:a:l:b:g:k:y:c:n:o:";
 
     parg_init(&ps);
     optend = parg_reorder(argc, argv, optstring, NULL);
@@ -200,7 +230,8 @@ int main(int argc, char *argv[])
                        "\t[-h]              prints this screen\n"
                        "\t[-v]              prints version information\n"
                        "\t[-p]              prints existing tag information\n"
-                       "\t[-r]              remove existing tag information\n"
+                       "\t[-r]              remove all existing tag information\n"
+                       "\t[-u]              set unspecified tags to empty string\n"
                        "\t[-t title]        sets the title\n"
                        "\t[-a artist]       sets the artist\n"
                        "\t[-l album]        sets the album\n"
@@ -218,12 +249,16 @@ int main(int argc, char *argv[])
                 return EXIT_SUCCESS;
                 break;
             case 'p':
-                printf("setting print to: true\n");
                 print = true;
+                printf("setting print to: true\n");
                 break;
             case 'r':
                 remove = true;
                 printf("setting remove to: true\n");
+                break;
+            case 'u':
+                set_unspecified_to_empty = true;
+                printf("setting unspecified fields to empty string: true\n");
                 break;
             case 't':
                 i.title = (char*)ps.optarg;
@@ -291,10 +326,19 @@ int main(int argc, char *argv[])
     }
 
     /*
+     * remove tags
+     */
+    if (remove) {
+        for (c = ps.optind; c < argc; ++c) {
+            remove_all_tags(argv[c]);
+        }
+    }
+
+    /*
      * loop through list of files and perform action
      */
     for (c = ps.optind; c < argc; ++c) {
-        set_tags(argv[c], &i);
+        set_tags(argv[c], &i, set_unspecified_to_empty);
     }
 
     /*
