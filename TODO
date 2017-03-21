@@ -1,6 +1,6 @@
 # TODO
 
-- add CMake support
+- experiment with CMAKE #FIND_LIBRARY(LIB_NAME_LIB lib) and  TARGET_LINK_LIBRARIES(tagmp3 ${LIB_NAME_LIB})
 - more testing
 - figure out comment issue
 - publish... eventually

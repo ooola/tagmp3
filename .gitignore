@@ -1,2 +1,6 @@
 *.mp3
 tagmp3
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
