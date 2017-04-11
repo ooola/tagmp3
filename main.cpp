@@ -1,10 +1,10 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <unistd.h>
 
-#include "id3v2lib.h"
 #include "parg.h"
+#include "tag_c.h"
 
 static bool verbose = false;
 
@@ -16,13 +16,10 @@ struct info {
     char* title;
     char* artist;
     char* album;
-    char* album_artist;
     char* genre;
-    char* track;
-    char* year;
+    unsigned int track;
+    unsigned int year;
     char* comment;
-    char* disc_number;
-    char* composer;
 };
 
 // returns true if file exits and is writeable
@@ -35,183 +32,109 @@ bool is_file_writable(const char* file)
     }
 }
 
-void print_all_tags(const char *file)
+void print_all_tags(const char *filename)
 {
-    if (!is_file_writable(file)) {
-        fprintf(stderr, "%s is not writeable or does not exist", file);
+    TagLib_File *file;
+    TagLib_Tag *tag;
+    // TODO print audio properties?
+
+    file = taglib_file_new(filename);
+    if (file == NULL) {
+        fprintf(stderr, "taglib failed to read %s", filename);
         exit(EXIT_FAILURE);
     }
-
-    ID3v2_tag* tag = load_tag(file); // Load the full tag from the file
+    tag = taglib_file_tag(file);
     if (tag == NULL) {
-        printf("%s: no tag found", file);
+        printf("%s: no tag found", filename);
     }
     else {
-        ID3v2_frame* f = tag_get_title(tag);
-        ID3v2_frame_text_content* tc = parse_text_frame_content(f);
-        if (tc != NULL) {
-            printf("TITLE: %s\n", tc->data);
-        } else {
-            printf("failed to parse TITLE\n");
-        }
-
-        f = tag_get_artist(tag);
-        tc = parse_text_frame_content(f);
-        if (tc != NULL) {
-            printf("ARTIST: %s\n", tc->data);
-        } else {
-            printf("failed to parse ARTIST\n");
-        }
-
-        f = tag_get_album(tag);
-        tc = parse_text_frame_content(f);
-        if (tc != NULL) {
-            printf("ALBUM: %s\n", tc->data);
-        } else {
-            printf("failed to parse ALBUM\n");
-        }
-
-        f = tag_get_album_artist(tag);
-        tc = parse_text_frame_content(f);
-        if (tc != NULL) {
-            printf("ALBUM ARTIST: %s\n", tc->data);
-        } else {
-            printf("failed to parse ALBUM ARTIST\n");
-        }
-
-        f = tag_get_genre(tag);
-        tc = parse_text_frame_content(f);
-        if (tc != NULL) {
-            printf("GENRE: %s\n", tc->data);
-        } else {
-            printf("failed to parse GENRE\n");
-        }
-
-        f = tag_get_track(tag);
-        tc = parse_text_frame_content(f);
-        if (tc != NULL) {
-            printf("TRACK: %s\n", tc->data);
-        } else {
-            printf("failed to parse TRACK\n");
-        }
-
-        f = tag_get_year(tag);
-        tc = parse_text_frame_content(f);
-        if (tc != NULL) {
-            printf("YEAR: %s\n", tc->data);
-        } else {
-            printf("failed to parse YEAR\n");
-        }
-
-        f = tag_get_comment(tag);
-        tc = parse_text_frame_content(f);
-        if (tc != NULL) {
-            printf("COMMENT: %s\n", tc->data);
-        } else {
-            printf("failed to parse COMMENT\n");
-        }
-
-        f = tag_get_disc_number(tag);
-        tc = parse_text_frame_content(f);
-        if (tc != NULL) {
-            printf("DISC NUMBER: %s\n", tc->data);
-        } else {
-            printf("failed to parse DISC NUMBER\n");
-        }
-
-        f = tag_get_composer(tag);
-        tc = parse_text_frame_content(f);
-        if (tc != NULL) {
-            printf("COMPOSER: %s\n", tc->data);
-        } else {
-            printf("failed to parse COMPOSER\n");
-        }
+        printf("TITLE: %s\n", taglib_tag_title(tag));
+        printf("ARTIST: %s\n", taglib_tag_artist(tag));
+        printf("ALBUM: %s\n", taglib_tag_album(tag));
+        printf("GENRE: %s\n", taglib_tag_genre(tag));
+        printf("TRACK: %d\n", taglib_tag_track(tag));
+        printf("YEAR: %d\n", taglib_tag_year(tag));
+        printf("COMMENT: %s\n", taglib_tag_comment(tag));
     }
 }
 
-void set_tags(const char *file, struct info* i, bool set_unspecified_to_empty)
+// see tag_c.h
+void set_tags(const char *filename, struct info* i, bool set_unspecified_to_empty)
 {
-    if (!is_file_writable(file)) {
-        fprintf(stderr, "%s is not writeable or does not exist", file);
+    TagLib_File *file;
+    TagLib_Tag *tag;
+
+    if (!is_file_writable(filename)) {
+        fprintf(stderr, "%s is not writeable or does not exist\n", filename);
         exit(1);
     }
 
-    ID3v2_tag* tag = load_tag(file);
-    if(tag == NULL)
+    taglib_set_strings_unicode(false);
+
+    file = taglib_file_new(filename);
+    if(file == NULL)
     {
-        tag = new_tag();
+        fprintf(stderr, "taglib_file_new failed for %s\n", filename);
+        exit(1);
     }
+    tag = taglib_file_tag(file);
 
     // Set the new info
     if (i->title) {
-        tag_set_title(i->title, 0, tag);
+        taglib_tag_set_title(tag, i->title); // TODO howto utf8 ??? taglib_set_strings_unicode(FALSE); ?
     }
     else if (set_unspecified_to_empty) {
-        tag_set_title("", 0, tag);
+        taglib_tag_set_title(tag, ""); // TODO howto utf8 ???
     }
     if (i->artist) {
-        tag_set_artist(i->artist, 0, tag);
+        taglib_tag_set_artist(tag, i->artist);
     }
     else if (set_unspecified_to_empty) {
-        tag_set_artist("", 0, tag);
+        taglib_tag_set_artist(tag, "");
     }
     if (i->album) {
-        tag_set_album(i->album, 0, tag);
+        taglib_tag_set_album(tag, i->album);
     }
     else if (set_unspecified_to_empty) {
-        tag_set_album("", 0, tag);
-    }
-    if (i->album_artist) {
-        tag_set_album_artist(i->album_artist, 0, tag);
-    }
-    else if (set_unspecified_to_empty) {
-        tag_set_album_artist("", 0, tag);
+        taglib_tag_set_album(tag, "");
     }
     if (i->genre) {
-        tag_set_genre(i->genre, 0, tag);
+        taglib_tag_set_genre(tag, i->genre);
     }
     else if (set_unspecified_to_empty) {
-        tag_set_genre("", 0, tag);
+        taglib_tag_set_genre(tag, "");
     }
     if (i->track) {
-        tag_set_track(i->track, 0, tag);
+        taglib_tag_set_track(tag, i->track);
     }
     else if (set_unspecified_to_empty) {
-        tag_set_track("", 0, tag);
+        taglib_tag_set_track(tag, 0);
     }
     if (i->year) {
-        tag_set_year(i->year, 0, tag);
+        taglib_tag_set_year(tag, i->year);
     }
     else if (set_unspecified_to_empty) {
-        tag_set_year("", 0, tag);
+        taglib_tag_set_year(tag, 0);
     }
     if (i->comment) {
-        tag_set_comment(i->comment, 0, tag);
+        taglib_tag_set_comment(tag, i->comment);
     }
     else if (set_unspecified_to_empty) {
-        tag_set_comment("", 0, tag);
-    }
-    if (i->disc_number) {
-        tag_set_disc_number(i->disc_number, 0, tag);
-    }
-    else if (set_unspecified_to_empty) {
-        tag_set_disc_number("", 0, tag);
-    }
-    if (i->composer) {
-        tag_set_composer(i->composer, 0, tag);
-    }
-    else if (set_unspecified_to_empty) {
-        tag_set_composer("", 0, tag);
+        taglib_tag_set_comment(tag, "");
     }
 
     // Write the new tag to the file
-    set_tag(file, tag);
+    taglib_file_save(file);
+
+    taglib_tag_free_strings(); // needed?
+    taglib_file_free(file);
 }
 
 void remove_all_tags(const char *filename)
 {
     // stat file to make sure it exits
-    remove_tag(filename);
+    // TODO: figure out how to do this
+    //remove_tag(filename);
 }
 
 int main(int argc, char *argv[])
@@ -220,7 +143,7 @@ int main(int argc, char *argv[])
     int c, optend = 0;
     bool print, remove, set_unspecified_to_empty = false;
     struct info i = {0};
-    const char *optstring = "hvprut:a:l:b:g:k:y:c:n:o:";
+    const char *optstring = "hvprut:a:l:g:k:y:c:";
 
     parg_init(&ps);
     optend = parg_reorder(argc, argv, optstring, NULL);
@@ -245,9 +168,7 @@ int main(int argc, char *argv[])
                        "\t[-g genre]        sets the genre\n"
                        "\t[-k track]        sets the track\n"
                        "\t[-y year]         sets the year\n"
-                       "\t[-c comment]      sets the comment\n"
-                       "\t[-n disc-number]  sets the disc number\n"
-                       "\t[-o composer]     sets the composer\n");
+                       "\t[-c comment]      sets the comment\n");
                 return EXIT_SUCCESS;
                 break;
             case 'v':
@@ -284,33 +205,21 @@ int main(int argc, char *argv[])
                 i.album = (char*)ps.optarg;
                 printf("setting album to: '%s'\n", i.album);
                 break;
-            case 'b':
-                i.album_artist = (char*)ps.optarg;
-                printf("setting album-artist to: '%s'\n", i.album_artist);
-                break;
             case 'g':
                 i.genre = (char*)ps.optarg;
                 printf("setting genre to: '%s'\n", i.genre);
                 break;
             case 'k':
-                i.track = (char*)ps.optarg;
-                printf("setting track to: '%s'\n", i.track);
+                i.track = atoi((char*)ps.optarg);
+                printf("setting track to: '%d'\n", i.track);
                 break;
             case 'y':
-                i.year = (char*)ps.optarg;
-                printf("setting year to: '%s'\n", i.year);
+                i.year = atoi((char*)ps.optarg);
+                printf("setting year to: '%d'\n", i.year);
                 break;
             case 'c':
                 i.comment = (char*)ps.optarg;
                 printf("setting comment to: '%s'\n", i.comment);
-                break;
-            case 'n':
-                i.disc_number = (char*)ps.optarg;
-                printf("setting disc_number to: '%s'\n", i.disc_number);
-                break;
-            case 'o':
-                i.composer = (char*)ps.optarg;
-                printf("setting composer to: '%s'\n", i.composer);
                 break;
             case '?':
                 if (ps.optopt == 't' ||
