@@ -6,10 +6,10 @@
 #include "parg.h"
 #include "tag_c.h"
 
-static bool verbose = false;
-
 #ifdef DEBUG
-verbose = true
+bool verbose = true;
+#else
+bool verbose = false;
 #endif
 
 struct info {
@@ -132,9 +132,9 @@ void set_tags(const char *filename, struct info* i, bool set_unspecified_to_empt
 
 void remove_all_tags(const char *filename)
 {
-    // stat file to make sure it exits
-    // TODO: figure out how to do this
-    //remove_tag(filename);
+    struct info i = { 0 };
+
+    set_tags(filename, &i, true);
 }
 
 int main(int argc, char *argv[])
