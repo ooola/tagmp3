@@ -12,8 +12,8 @@ addons:
       - cmake
 before_script:
   # build dependencies
-  - git clone --recursive git@github.com:taglib/taglib.git
-  - git clone --recursive git@github.com:jibsen/parg.git
+  - git clone --recursive https://github.com/jibsen/parg.git
+  - git clone --recursive https://github.com/taglib/taglib.git
   - ./build_deps.sh
 script:
   # Link gcc-6 and g++-6 to their standard commands
