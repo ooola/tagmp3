@@ -1,5 +1,7 @@
 # tagmp3
 
+[![Build Status](https://travis-ci.org/ooola/tagmp3.svg?branch=master)](https://travis-ci.org/ooola/tagmp3)
+
 Tagmp3 is a command line program to edit mp3 tags.
 
 ## Building
