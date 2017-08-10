@@ -1,20 +1,16 @@
 language: cpp
-
-matrix:
-  include:
-    - os: linux
-      sudo: required
-      addons:
-        apt:
-          sources:
-          - ubuntu-toolchain-r-test
-          packages:
-          - gcc-6
-          - g++-6
-          - cmake
-          - zlib1g-dev
-    - os: osx #uses default xcode
+dist: trusty
+sudo: required
 compiler: gcc
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - gcc-6
+    - g++-6
+    - cmake
+    - zlib1g-dev
 before_script:
 - "./build_deps.sh"
 script:
