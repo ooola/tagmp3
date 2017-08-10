@@ -24,7 +24,7 @@ after_success:
 - openssl dgst -sha256 tagmp3
 - gzip -9 tagmp3
 - ls -l tagmp3.gz
-- openssl dgst -sha256 tagmp3
+- openssl dgst -sha256 tagmp3.gz
 deploy:
   provider: releases
   api_key:
