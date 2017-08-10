@@ -5,6 +5,8 @@ include_directories("./parg/")
 
 add_definitions(-DTAGLIB_STATIC)
 
+add_executable(tagmp3 main.cpp)
+
 # detect operating system
 message(STATUS "We are on a ${CMAKE_SYSTEM_NAME} system")
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
@@ -12,5 +14,3 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 else()
     target_link_libraries(tagmp3 ${CMAKE_SOURCE_DIR}/taglib/bindings/c/libtag_c.a ${CMAKE_SOURCE_DIR}/taglib/taglib/libtag.a ${CMAKE_SOURCE_DIR}/parg/build/libparg.a z)
 endif()
-
-add_executable(tagmp3 main.cpp)
