@@ -6,7 +6,7 @@ Tagmp3 is a command line program to edit mp3 tags. This program is statically bu
 
 ## Download
 
-Downloads can be found on the [releases page](./)
+Downloads can be found on the [releases page](./releases)
 
 ## Usage
 ```
