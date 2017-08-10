@@ -1,7 +1,4 @@
 # TODO
 
-- experiment with CMAKE #FIND_LIBRARY(LIB_NAME_LIB lib) and  TARGET_LINK_LIBRARIES(tagmp3 ${LIB_NAME_LIB})
 - more testing
 - figure out comment issue
-- Do builds on Travis CI (see https://gist.github.com/domenic/ec8b0fc8ab45f39403dd)
-- Pull request for taglib .gitignore changes
