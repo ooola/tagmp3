@@ -27,6 +27,6 @@ deploy:
   skip_cleanup: true
   on:
     repo: ooola/tagmp3
-    # tags: true
+    tags: true
     # "Skipping a deployment with the releases provider because this is not a tagged commit"
     # will be displayed if no tags and tags is set to true
