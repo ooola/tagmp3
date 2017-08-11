@@ -5,6 +5,7 @@
 
 #include "parg.h"
 #include "tag_c.h"
+#include "version.h"
 
 #ifdef DEBUG
 bool verbose = true;
@@ -21,6 +22,14 @@ struct info {
     unsigned int year;
     char* comment;
 };
+
+/*
+ * Print version and build information fetched from version.h
+ */
+void print_version()
+{
+    fprintf(stdout, "tagmp3 - %s - %s - %s\n", g_version, g_build_date, g_git_sha);
+}
 
 // returns true if file exits and is writeable
 bool is_file_writable(const char* file)
@@ -172,7 +181,7 @@ int main(int argc, char *argv[])
                 return EXIT_SUCCESS;
                 break;
             case 'v':
-                printf("tagmp3 0.0.1\n");
+                print_version();
                 return EXIT_SUCCESS;
                 break;
             case 'p':
