@@ -17,6 +17,7 @@ script:
 - export CC=/usr/bin/gcc-6
 - export CXX=/usr/bin/g++-6
 - gcc -v && g++ -v && cmake --version
+- ./set_version.sh
 - cmake .
 - make
 after_success:
