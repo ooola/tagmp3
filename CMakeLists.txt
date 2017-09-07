@@ -14,3 +14,7 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 else()
     target_link_libraries(tagmp3 ${CMAKE_SOURCE_DIR}/taglib/bindings/c/libtag_c.a ${CMAKE_SOURCE_DIR}/taglib/taglib/libtag.a ${CMAKE_SOURCE_DIR}/parg/build/libparg.a z)
 endif()
+
+enable_testing()
+
+add_test(alltests test/test.sh)
