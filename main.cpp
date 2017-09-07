@@ -173,7 +173,6 @@ int main(int argc, char *argv[])
                        "\t[-t title]        sets the title\n"
                        "\t[-a artist]       sets the artist\n"
                        "\t[-l album]        sets the album\n"
-                       "\t[-b album-artist] sets the album artist\n"
                        "\t[-g genre]        sets the genre\n"
                        "\t[-k track]        sets the track\n"
                        "\t[-y year]         sets the year\n"
@@ -234,7 +233,6 @@ int main(int argc, char *argv[])
                 if (ps.optopt == 't' ||
                     ps.optopt == 'a' ||
                     ps.optopt == 'l' ||
-                    ps.optopt == 'b' ||
                     ps.optopt == 'g' ||
                     ps.optopt == 'k' ||
                     ps.optopt == 'y' ||
