@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # help
 ./tagmp3 -h > help.out 2>&1
