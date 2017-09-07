@@ -2,7 +2,7 @@
 
 # help
 ./tagmp3 -h > help.out 2>&1
-diff help.out help.expected
+diff help.out test/help.expected
 [[ $? -eq 0 ]] || { echo "Help test failed"; exit 1; }
 
 # test setting all tags
@@ -17,7 +17,7 @@ cp tiny.mp3 test.mp3
          -c abcdefghijklmnopqrstuvwxyzåäö \
 	test.mp3
 ./tagmp3 -p test.mp3 > p.out 2>&1
-diff p.out p.expected
+diff p.out test/p.expected
 [[ $? -eq 0 ]] || { echo "Set and print tags test failed"; exit 1; }
 
 exit 0

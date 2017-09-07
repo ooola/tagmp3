@@ -7,3 +7,4 @@ Makefile
 *.swp
 Testing/*
 CTestTestfile.cmake
+*.out

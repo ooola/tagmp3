@@ -7,7 +7,6 @@ Usage: tagmp3 [options] filename
 	[-t title]        sets the title
 	[-a artist]       sets the artist
 	[-l album]        sets the album
-	[-b album-artist] sets the album artist
 	[-g genre]        sets the genre
 	[-k track]        sets the track
 	[-y year]         sets the year
