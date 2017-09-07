@@ -20,7 +20,7 @@ script:
 - ./set_version.sh
 - cmake .
 - make
-- ./test/test.sh
+- make test
 after_success:
 - ls -al
 - openssl dgst -sha256 tagmp3
