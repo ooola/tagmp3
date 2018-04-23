@@ -150,7 +150,7 @@ int main(int argc, char *argv[])
 {
     struct parg_state ps = {0};
     int c, optend = 0;
-    bool print, remove, set_unspecified_to_empty = false;
+    bool print, remove, set_unspecified_to_empty, non_print_option_set = false;
     struct info i = {0};
     const char *optstring = "hvprut:a:l:g:k:y:c:";
 
@@ -191,42 +191,51 @@ int main(int argc, char *argv[])
                 break;
             case 'r':
                 remove = true;
+                non_print_option_set = true;
                 if (verbose) {
                     printf("setting remove to: true\n");
                 }
                 break;
             case 'u':
                 set_unspecified_to_empty = true;
+                non_print_option_set = true;
                 if (verbose) {
                     printf("setting unspecified fields to empty string: true\n");
                 }
                 break;
             case 't':
                 i.title = (char*)ps.optarg;
+                non_print_option_set = true;
                 printf("setting title to: '%s'\n", i.title);
                 break;
             case 'a':
                 i.artist = (char*)ps.optarg;
+                non_print_option_set = true;
                 printf("setting artist to: '%s'\n", i.artist);
                 break;
             case 'l':
                 i.album = (char*)ps.optarg;
+                non_print_option_set = true;
                 printf("setting album to: '%s'\n", i.album);
                 break;
             case 'g':
                 i.genre = (char*)ps.optarg;
+                non_print_option_set = true;
                 printf("setting genre to: '%s'\n", i.genre);
                 break;
             case 'k':
                 i.track = atoi((char*)ps.optarg);
+                non_print_option_set = true;
                 printf("setting track to: '%d'\n", i.track);
                 break;
             case 'y':
                 i.year = atoi((char*)ps.optarg);
+                non_print_option_set = true;
                 printf("setting year to: '%d'\n", i.year);
                 break;
             case 'c':
                 i.comment = (char*)ps.optarg;
+                non_print_option_set = true;
                 printf("setting comment to: '%s'\n", i.comment);
                 break;
             case '?':
@@ -265,8 +274,10 @@ int main(int argc, char *argv[])
     /*
      * loop through list of files and perform action
      */
-    for (c = ps.optind; c < argc; ++c) {
-        set_tags(argv[c], &i, set_unspecified_to_empty);
+    if (non_print_option_set) {
+        for (c = ps.optind; c < argc; ++c) {
+            set_tags(argv[c], &i, set_unspecified_to_empty);
+        }
     }
 
     /*

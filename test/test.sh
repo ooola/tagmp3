@@ -20,6 +20,16 @@ cp tiny.mp3 test.mp3
 diff p.out test/p.expected
 [[ $? -eq 0 ]] || { echo "Set and print tags test failed"; exit 1; }
 
+# test that readonly file can be read (printed)
+chmod 444 test.mp3
+./tagmp3 -p test.mp3 > readonly.out 2>&1
+diff readonly.out test/p.expected
+[[ $? -eq 0 ]] || { echo "Printing readonly file failed"; exit 1; }
+
+# cleanup
+chmod 644 test.mp3
+rm test.mp3
+
 exit 0
 
 
