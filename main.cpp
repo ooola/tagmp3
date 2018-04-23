@@ -78,7 +78,7 @@ void set_tags(const char *filename, struct info* i, bool set_unspecified_to_empt
         exit(1);
     }
 
-    taglib_set_strings_unicode(false);
+    taglib_set_strings_unicode(true);
 
     file = taglib_file_new(filename);
     if(file == NULL)
