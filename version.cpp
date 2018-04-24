@@ -1,4 +1,3 @@
-// this file is overwritten during build
-const char *g_version = "v0.2-12-g7ed1648";
-const char *g_build_date = "Fri Aug 11 14:24:02 PDT 2017";
-const char *g_git_sha = "7ed16482ae01292df52c29bd117768d89bae12b6";
+const char *g_version = "v0.6";
+const char *g_build_date = "Tue Apr 24 09:40:25 PDT 2018";
+const char *g_git_sha = "53431c4b30032b2de2d37ffab5b7bddd90610756";
