@@ -43,3 +43,11 @@ Next build tagmp3
 cmake .
 make
 ```
+
+## Release
+
+```
+git tag -a v1.0 -m 'version 1.0'
+./set_version.sh
+git push origin v1.0
+```
